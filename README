@@ -1,0 +1,6 @@
+nitc-fwd
+========
+
+A python "daemon" that tries to keep you logged into the NITC Firewall
+Run ./nitc-fwd.py for the first time to store your username and password
+It will automatically log you in from the next run onwards
