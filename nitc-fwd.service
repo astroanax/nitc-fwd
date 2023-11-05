@@ -3,7 +3,7 @@ Description=NITC Firewall Login Daemon
 
 [Service]
 Type=simple
-ExecStart=/home/%u/bin/nitc-fwd.py
+ExecStart=/home/%u/.local/bin/nitc-fwd
 Restart=on-failure
 
 [Install]

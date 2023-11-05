@@ -10,16 +10,13 @@ import sys
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
-firewall_host = None
-magic = None
+firewall_keepalive_url = None
 
 def login(username, password):
     check_url = "http://networkcheck.kde.org/"
     r = requests.get(check_url)
-    if r.url != check_url:
-        global firewall_host
-        global magic
 
+    if r.url != check_url:
         firewall_login_url = r.url
         magic = firewall_login_url[r.url.find('?')+1:]
         firewall_host = r.url[:r.url.rfind('/')]
@@ -58,7 +55,7 @@ def login(username, password):
 def handle_kill(signum, frame):
     logging.error("received signal " + str(signum))
     try:
-        r = requests.get(firewall_host + '/logout?' + magic)
+        r = requests.get(firewall_keepalive_url.replace("keepalive", "logout"))
         if r.status_code == 200:
             logging.info("successfully logged out")
         else:
@@ -95,6 +92,7 @@ def main():
     signal.signal(signal.SIGTERM, handle_kill)
     config_file_loc = get_config_file_loc()
     daemon = True
+    global firewall_keepalive_url
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "login":
@@ -161,6 +159,7 @@ def main():
             password = input("enter password: ")
             config = {"username": username, "password": password}
             json.dump(config, f)
+
     if "keepalive" in config.keys():
         firewall_keepalive_url = config["keepalive"]
         logger.info("loaded existing keepalive url from config")

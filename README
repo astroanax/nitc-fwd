@@ -2,13 +2,14 @@ nitc-fwd
 ========
 
 A python "daemon"/CLI that tries to keep you logged into the NITC Firewall
-Run nitc-fwd.py for the first time to store your username and password
+To install, run "pip install --user ." (Arch users use "pipx install ." instead)
+Run nitc-fwd for the first time to store your username and password
 It will automatically log you in from the next run onwards, and logout on kill/reboot
 
-Use "nohup ./nitc-fwd.py &" to run it in the background (like a daemon)
-or use the systemd service file. Change the path to nitc-fwd.py in the file,
+Use "nohup nitc-fwd &" to run it in the background (like a daemon)
+or use the systemd service file. Change the path to nitc-fwd in the file,
 copy it to ~/.config/systemd/user and run "systemd --user enable --now nitc-fwd"
 
-To use the CLI, run "./nitc-fwd.py login" to login
-"./nitc-fwd.py logout" to logout
-"./nitc-fwd.py refresh" to refresh the keepalive
+To use the CLI, run "nitc-fwd login" to login
+"nitc-fwd logout" to logout
+"nitc-fwd refresh" to refresh the keepalive
