@@ -1,0 +1,10 @@
+[Unit]
+Description=NITC Firewall Login Daemon
+
+[Service]
+Type=simple
+ExecStart=/home/%u/bin/nitc-fwd.py
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
