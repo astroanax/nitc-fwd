@@ -148,6 +148,7 @@ def main():
 
         else:
             logging.error("unknown command: " + sys.argv[1])
+            logging.info("Usage: " + sys.argv[0] + " [login|logout|refresh]")
             exit(1)
 
     try:
