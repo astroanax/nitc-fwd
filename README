@@ -10,4 +10,5 @@ or use the systemd service file. Change the path to nitc-fwd.py in the file,
 copy it to ~/.config/systemd/user and run "systemd --user enable --now nitc-fwd"
 
 To use the CLI, run "./nitc-fwd.py login" to login
-and "./nitc-fwd.py logout" to logout
+"./nitc-fwd.py logout" to logout
+"./nitc-fwd.py refresh" to refresh the keepalive

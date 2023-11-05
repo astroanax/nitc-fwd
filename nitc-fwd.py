@@ -71,7 +71,15 @@ def handle_kill(signum, frame):
 def keepalive(keepalive_url):
     while True:
         time.sleep(10*60)
-        requests.get(keepalive_url)
+        try:
+            r = requests.get(keepalive_url)
+            if r.status_code != 200:
+                logging.error("error refreshing keepalive")
+                exit(1)
+            logging.info("succesfully refreshed keepalive")
+        except Exception as e:
+            logging.erro(e)
+            exit(1)
 
 def get_config_file_loc():
     try:
@@ -114,6 +122,30 @@ def main():
             else:
                 logging.error("no keepalive found; seems like you didn't use nitc-fwd to login")
                 exit(1)
+
+        elif sys.argv[1] == "refresh":
+            try:
+                with open(config_file_loc, "r") as f:
+                    config = json.load(f)
+            except FileNotFoundError:
+                logging.error("no config file found!")
+                exit(1)
+            if "keepalive" in config.keys():
+                firewall_keepalive_url = config["keepalive"]
+                try:
+                    r = requests.get(firewall_keepalive_url)
+                    if r.status_code == 200:
+                        logging.info("succesfully refreshed keepalive")
+                        exit(0)
+                    else:
+                        logging.error("error refreshing keepalive")
+                        exit(2)
+                except Exception as e:
+                    logging.error(e)
+            else:
+                logging.error("no keepalive found; seems like you didn't use nitc-fwd to login")
+                exit(1)
+
         else:
             logging.error("unknown command: " + sys.argv[1])
             exit(1)
