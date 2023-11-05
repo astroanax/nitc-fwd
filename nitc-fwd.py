@@ -10,10 +10,16 @@ import sys
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
+firewall_host = None
+magic = None
+
 def login(username, password):
     check_url = "http://networkcheck.kde.org/"
     r = requests.get(check_url)
     if r.url != check_url:
+        global firewall_host
+        global magic
+
         firewall_login_url = r.url
         magic = firewall_login_url[r.url.find('?')+1:]
         firewall_host = r.url[:r.url.rfind('/')]
@@ -32,6 +38,9 @@ def login(username, password):
         if r1.url == firewall_host + '/':
             logger.error("firewall authentication failed")
             return 1
+        elif r1.url == firewall_login_url:
+            logger.error("authentication limit reached")
+            return 2
         else:
             logger.info("logged in, keepalive url is " + r1.url)
             config_file_loc = get_config_file_loc()
@@ -47,7 +56,16 @@ def login(username, password):
     return 0
 
 def handle_kill(signum, frame):
-    logging.error("received signal " + str(signum) + ", exiting")
+    logging.error("received signal " + str(signum))
+    try:
+        r = requests.get(firewall_host + '/logout?' + magic)
+        if r.status_code == 200:
+            logging.info("successfully logged out")
+        else:
+            logging.info("error logging out")
+            exit(2)
+    except Exception as e:
+        logging.error(e)
     exit(1)
 
 def keepalive(keepalive_url):
