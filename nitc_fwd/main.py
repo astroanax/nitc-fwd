@@ -164,8 +164,8 @@ def main():
         firewall_keepalive_url = config["keepalive"]
         logger.info("loaded existing keepalive url from config")
         try:
+            logger.info("using old keepalive, " + firewall_keepalive_url, timeout=3)
             requests.get(firewall_keepalive_url)
-            logger.info("using old keepalive, " + firewall_keepalive_url)
             keepalive(firewall_keepalive_url)
         except Exception as e:
             logging.error("failed not use old keepalive, re-logging in")
